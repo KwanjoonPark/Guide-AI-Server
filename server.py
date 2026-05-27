@@ -8,6 +8,7 @@ FastAPI WebSocket 서버
 
 import asyncio
 import time
+from collections import Counter
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -63,6 +64,15 @@ def _infer_and_render(
     img_out, n_drawn, n_pnp = draw_predictions(
         frame, result, MODEL_NAMES, ALL_CLASSES, camera_matrix, DIST_COEFFS,
     )
+    if n_drawn > 0:
+        clss = result.boxes.cls.cpu().numpy().astype(int)
+        confs = result.boxes.conf.cpu().numpy()
+        cnt = Counter(MODEL_NAMES[int(c)] for c in clss)
+        cls_str = " ".join(f"{k}={v}" for k, v in cnt.items())
+        print(
+            f"[detect] frame={frame_idx} n={n_drawn} pnp={n_pnp} "
+            f"maxConf={float(confs.max()):.2f} | {cls_str}"
+        )
     img_out = draw_legend(img_out)
     img_out = draw_hud(img_out, frame_idx, 0, fps_now, n_drawn, n_pnp, CONF)
     ok, buf = cv2.imencode(".jpg", img_out, [cv2.IMWRITE_JPEG_QUALITY, JPEG_QUALITY])
