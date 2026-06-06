@@ -4,7 +4,7 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # 기본 환경 설정
-WEIGHT_PATH = str(Path(__file__).parent / 'best_seg.pt')
+WEIGHT_PATH = str(Path(__file__).parent / 'best_seg2.pt')
 VIDEO_PATH  = 'C:/python_project/yolo_seg/media/road1.mp4'
 SAVE_PATH   = 'C:/python_project/yolo_seg/media/output.mp4'
 
